@@ -10,7 +10,14 @@ function connectDB(string $host = 'localhost', string $user = 'root', string $pa
     die($e->getMessage());
   }
 }
-
+function connectDBPDO(string $host = 'localhost', string $user = 'root', string $pass = '', string $dbname = 'wordpress'){
+  global $con; 
+  try {
+    $con = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
+  } catch (PDOException $e) {
+    die($e->getMessage());
+  }
+}
 $errores="";
 extract($_POST);
 session_start();
@@ -57,22 +64,21 @@ session_start();
           // if($user->exists())
           //   header("Location: ../wp-admin");
           // print_r($user);
-          $connect = connectDB();
-          $result = $connect->query($sql);
+          connectDBPDO();
+          $result = $con->query($sql);
 
           if(!$result)
             $errores.="Error de conexion";
 
-          if($result->num_rows==0){
+          if($result->rowCount()==0){
             $errores.="Usuario o contraseña no válidos";
           }
           else{
-            $_SESSION['id'] = $result->fetch_assoc()['ID'];
+            $_SESSION['id'] = $result->fetch()['ID'];
             $errores="";
             header("Location: ./private-access.php");
           }
-          $result->free();
-          $connect->close();
+          $result->closeCursor();
         }
         else
           $errores .= "Los campos no pueden estar vacios";

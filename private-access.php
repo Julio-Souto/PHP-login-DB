@@ -10,10 +10,18 @@
       die($e->getMessage());
     }
   }
+  function connectDBPDO(string $host = 'localhost', string $user = 'root', string $pass = '', string $dbname = 'wordpress'){
+    global $con; 
+    try {
+      $con = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
+    } catch (PDOException $e) {
+      die($e->getMessage());
+    }
+  }
   $sql = 'SELECT * FROM wp_users WHERE ID="'.$_SESSION['id'].'"';
-  $connect = connectDB();
-  $result = $connect->query($sql);
-  $usuario = "Hola ".$result->fetch_column(1).", Tu ID es ".$_SESSION['id'];
+  connectDBPDO();
+  $result = $con->query($sql);
+  $usuario = "Hola ".$result->fetchColumn(1).", Tu ID es ".$_SESSION['id'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
