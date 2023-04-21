@@ -10,10 +10,9 @@ function connectDB(string $host = 'localhost', string $user = 'root', string $pa
     die($e->getMessage());
   }
 }
-function connectDBPDO(string $host = 'localhost', string $user = 'root', string $pass = '', string $dbname = 'wordpress'){
-  global $con; 
+function connectDBPDO(string $host = 'localhost', string $user = 'root', string $pass = '', string $dbname = 'wordpress'):PDO{
   try {
-    $con = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
+    return new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
   } catch (PDOException $e) {
     die($e->getMessage());
   }
@@ -64,7 +63,7 @@ session_start();
           // if($user->exists())
           //   header("Location: ../wp-admin");
           // print_r($user);
-          connectDBPDO();
+          $con = connectDBPDO();
           $result = $con->query($sql);
 
           if(!$result)
